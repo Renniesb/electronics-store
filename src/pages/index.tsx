@@ -1,12 +1,40 @@
-import Head from 'next/head'
-import Image from 'next/image'
-import { Inter } from '@next/font/google'
-import styles from '@/styles/Home.module.css'
-import Link from 'next/link'
-
-const inter = Inter({ subsets: ['latin'] })
+import Head from "next/head";
+import Image from "next/image";
+import { Inter } from "@next/font/google";
+import styles from "@/styles/Home.module.css";
+import Link from "next/link";
+import { useEffect, useState } from "react";
+import axios from "axios";
+const inter = Inter({ subsets: ["latin"] });
+interface Rating {
+  rate: number;
+  count: number;
+}
+interface Product {
+  id: number;
+  title: string;
+  price: number;
+  description: string;
+  category: string;
+  image: string;
+  rating: Rating;
+}
 
 export default function Home() {
+  const [electronics, setElectronics] = useState(Array<Product>);
+  const getElectronics = async () => {
+    try {
+      const { data } = await axios.get(
+        "https://fakestoreapi.com/products/category/electronics"
+      );
+      setElectronics(data);
+    } catch (err) {
+      console.log(err);
+    }
+  };
+  useEffect(() => {
+    getElectronics();
+  }, []);
   return (
     <>
       <Head>
@@ -17,14 +45,30 @@ export default function Home() {
       </Head>
       <header>
         <nav>
-          <Link href="/" passHref>Home</Link>
-          <Link href="/cart" passHref>Cart</Link>
-          <Link href="/about-us" passHref>About Us</Link>
+          <Link href="/" passHref>
+            Home
+          </Link>
+          <Link href="/cart" passHref>
+            Cart
+          </Link>
+          <Link href="/about-us" passHref>
+            About Us
+          </Link>
         </nav>
       </header>
       <main className={styles.main}>
-       
+        {electronics.map((product) => (
+          <Link href={`/products/${product.id}`} key={product.id} passHref>
+            <Image
+              width={300}
+              height={300}
+              src={product.image}
+              alt={product.title}
+            />
+            <h2>{product.title}</h2>
+          </Link>
+        ))}
       </main>
     </>
-  )
+  );
 }
