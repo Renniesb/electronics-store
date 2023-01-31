@@ -59,13 +59,13 @@ export default function Home() {
       <main className={styles.main}>
         {electronics.map((product) => (
           <Link href={`/products/${product.id}`} key={product.id} passHref>
+            <h2>{product.title}</h2>
             <Image
               width={300}
               height={300}
               src={product.image}
               alt={product.title}
             />
-            <h2>{product.title}</h2>
           </Link>
         ))}
       </main>
