@@ -19,22 +19,12 @@ interface Product {
   image: string;
   rating: Rating;
 }
+interface Products {
+  data: Product[];
+}
 
-export default function Home() {
-  const [electronics, setElectronics] = useState(Array<Product>);
-  const getElectronics = async () => {
-    try {
-      const { data } = await axios.get(
-        "https://fakestoreapi.com/products/category/electronics"
-      );
-      setElectronics(data);
-    } catch (err) {
-      console.log(err);
-    }
-  };
-  useEffect(() => {
-    getElectronics();
-  }, []);
+export default function Home({data}: Products) {
+
   return (
     <>
       <Head>
@@ -57,7 +47,7 @@ export default function Home() {
         </nav>
       </header>
       <main className={styles.main}>
-        {electronics.map((product) => (
+        {data.map((product) => (
           <Link href={`/products/${product.id}`} key={product.id} passHref>
             <h2>{product.title}</h2>
             <Image
@@ -71,4 +61,15 @@ export default function Home() {
       </main>
     </>
   );
+}
+
+export async function getServerSideProps() {
+    const { data } = await axios.get(
+      "https://fakestoreapi.com/products/category/electronics"
+    );
+    return {
+      props: {
+        data: data,
+      }
+    };
 }
