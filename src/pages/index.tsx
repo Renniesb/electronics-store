@@ -23,8 +23,7 @@ interface Products {
   data: Product[];
 }
 
-export default function Home({data}: Products) {
-
+export default function Home({ data }: Products) {
   return (
     <>
       <Head>
@@ -47,29 +46,57 @@ export default function Home({data}: Products) {
         </nav>
       </header>
       <main className={styles.main}>
-        {data.map((product) => (
-          <Link href={`/products/${product.id}`} key={product.id} passHref>
-            <h2>{product.title}</h2>
-            <Image
-              width={300}
-              height={300}
-              src={product.image}
-              alt={product.title}
-            />
-          </Link>
-        ))}
+        {data.map((product) => {
+          const {
+            id,
+            title,
+            price,
+            description,
+            category,
+            image,
+            rating: { rate, count },
+          } = product;
+          return (
+            <Link
+              href={{
+                pathname: `/products/${product.id}`,
+                query: {
+                  id,
+                  title,
+                  price,
+                  description,
+                  category,
+                  image,
+                  rate,
+                  count,
+                },
+              }}
+              as={`/products/${product.id}`}
+              key={product.id}
+              passHref
+            >
+              <h2>{product.title}</h2>
+              <Image
+                width={300}
+                height={300}
+                src={product.image}
+                alt={product.title}
+              />
+            </Link>
+          );
+        })}
       </main>
     </>
   );
 }
 
 export async function getServerSideProps() {
-    const { data } = await axios.get(
-      "https://fakestoreapi.com/products/category/electronics"
-    );
-    return {
-      props: {
-        data: data,
-      }
-    };
+  const { data } = await axios.get(
+    "https://fakestoreapi.com/products/category/electronics"
+  );
+  return {
+    props: {
+      data: data,
+    },
+  };
 }

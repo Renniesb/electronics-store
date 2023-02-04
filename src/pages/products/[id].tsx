@@ -1,5 +1,10 @@
+
+import { useRouter } from "next/router";
+
 const ProductPage = () => {
-    return <h1>A single Product</h1>
+    const router = useRouter();
+    const {query: {title, description}} = router;
+    return <div><h1>{title}</h1><p>{description}</p></div>
 };
 
 export default ProductPage;
